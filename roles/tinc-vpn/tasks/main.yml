@@ -10,3 +10,15 @@
     template:
       src: tinc.conf.j2
       dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc.conf
+
+  - name: create tinc-up from template
+    template:
+      src: tinc-up.j2
+      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-up
+      mode: 0755
+
+  - name: create tinc-down from template
+    template:
+      src: tinc-down.j2
+      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-down
+      mode: 0755
