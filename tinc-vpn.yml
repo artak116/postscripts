@@ -21,6 +21,7 @@
     - ec2_tag_role: "{{ec2_tags.tags.role}}"
     - ec2_tag_classifier: "{{ec2_tags.tags.classifier}}"
     - ec2_tag_tinc_netname: "{{ec2_tags.tags.tinc_netname}}"
+    - tinc_host_name: '{{ec2_tag_cluster}}_{{ansible_ec2_instance_id|replace("-","_")}}'
 
   roles:
     - tinc-vpn
