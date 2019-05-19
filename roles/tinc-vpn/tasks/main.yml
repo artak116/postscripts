@@ -35,7 +35,7 @@
 
   - name: tinc systemd service unit to enable logging
     lineinfile:
-      dest: "/lib/systemd/system/tinc@service"
+      dest: "/lib/systemd/system/tinc@.service"
       regexp: "^ExecStart"
       line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
 
