@@ -26,4 +26,4 @@
   - name: create tinc host file from template
     template:
       src: tinc.host.j2
-      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/tinc-down/{{tinc_host_name}}
+      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}
