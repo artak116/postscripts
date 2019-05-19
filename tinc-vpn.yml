@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+    - name: grab ec2 facts
+      action: ec2_metadata_facts
+
+    - name: Obtain ec2 tags for controller
+      local_action:
+        module: ec2_tag
+        region: "{{ansible_ec2_placement_region}}"
+        resource: "{{ansible_ec2_instance_id}}"
+        state: list
+      register: ec2_tags
+
+  vars:
+    - ec2_tag_cluster: "{{ec2_tags.tags.cluster}}"
+    - ec2_tag_role: "{{ec2_tags.tags.role}}"
+    - ec2_tag_classifier: "{{ec2_tags.tags.classifier}}"
+    - ec2_tag_tinc_netname: "{{ec2_tags.tags.tinc_netname}}"
+
+  roles:
+    - tinc-vpn
