@@ -40,7 +40,7 @@
       line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
 
   - name: be sure tinc is started/enables
-    systemd: name=tinc state=stopped enabled=no
+    systemd:
       name: "{{item}}"
       enabled: yes
       daemon_reload: yes
