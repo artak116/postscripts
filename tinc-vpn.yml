@@ -18,7 +18,7 @@
 
     - name: Disable src/dst check of instances
       ec2:
-        instance_ids: '{{ ansible_ec2_instance_id} }}'
+        instance_ids: '{{ ansible_ec2_instance_id }}'
         region: '{{ ansible_ec2_placement_region }}'
         source_dest_check: no
 
