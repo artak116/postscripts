@@ -45,7 +45,7 @@
       name: "{{item}}"
       enabled: yes
       daemon_reload: yes
-      state: "started"
+      state: "restarted"
     with_items:
       - tinc
       - tinc@{{ec2_tag_tinc_netname}}
