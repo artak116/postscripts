@@ -16,12 +16,18 @@
         state: list
       register: ec2_tags
 
+    - name: Disable src/dst check of instances
+      ec2:
+        instance_ids: '{{ ansible_ec2_instance_id} }}'
+        region: '{{ ansible_ec2_placement_region }}'
+        source_dest_check: no
+
   vars:
     - ec2_tag_cluster: "{{ec2_tags.tags.cluster}}"
     - ec2_tag_role: "{{ec2_tags.tags.role}}"
     - ec2_tag_classifier: "{{ec2_tags.tags.classifier}}"
     - ec2_tag_tinc_netname: "{{ec2_tags.tags.tinc_netname}}"
-    - tinc_host_name: '{{ec2_tag_cluster}}_{{ansible_ec2_instance_id|replace("-","_")}}'
+    - tinc_host_name: '{{ec2_tag_classifier}}_{{ec2_tag_cluster}}'
 
   roles:
     - tinc-vpn
