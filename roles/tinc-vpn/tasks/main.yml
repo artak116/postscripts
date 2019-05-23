@@ -38,6 +38,7 @@
       dest: "/lib/systemd/system/tinc@.service"
       regexp: "^ExecStart"
       line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
+    when: ec2_tag_classifier == 'hub'
 
   - name: be sure tinc is started/enables
     systemd:
