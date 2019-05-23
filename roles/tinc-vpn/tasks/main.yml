@@ -28,6 +28,11 @@
       src: tinc.host.j2
       dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}
 
+  - name: make sure privat ekey not exists
+    file:
+      path: /etc/tinc/{{ec2_tag_tinc_netname}}/rsa_key.priv
+      state: absent
+
   - name: generate tinc private key
     command: tincd -n {{ec2_tag_tinc_netname}} -K4096
     args:
