@@ -17,11 +17,7 @@
       register: ec2_tags
 
     - name: Disable src/dst check of instances
-      ec2:
-        instance_ids: '{{ ansible_ec2_instance_id }}'
-        region: '{{ ansible_ec2_placement_region }}'
-        source_dest_check: no
-        image: "{{ ansible_ec2_ami_id }}"
+      shell: aws ec2 modify-instance-attribute --instance-id {{ ansible_ec2_instance_id }} --no-source-dest-check --region {{ ansible_ec2_placement_region }}
 
   vars:
     - ec2_tag_cluster: "{{ec2_tags.tags.cluster}}"
