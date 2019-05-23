@@ -21,6 +21,7 @@
         instance_ids: '{{ ansible_ec2_instance_id }}'
         region: '{{ ansible_ec2_placement_region }}'
         source_dest_check: no
+        image: {{ ansible_ec2_ami_id }}
 
   vars:
     - ec2_tag_cluster: "{{ec2_tags.tags.cluster}}"
