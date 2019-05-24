@@ -2,6 +2,4 @@
 ifconfig tun0 {{ ansible_ec2_instance_identity_document_privateip }} netmask 255.255.255.255
 
 # Routes for private subnets
-route add -net 10.0.0.0/8 dev tun0
-route add -net 172.16.0.0/12 dev tun0
-route add -net 192.168.0.0/16 dev tun0
+
