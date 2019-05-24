@@ -71,4 +71,4 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: '{ "node-id": { "S": "{{tinc_host_name}}" }, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"} }'
+        item: ' { "node-id": { "S": "{{tinc_host_name}}" }, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"} } '
