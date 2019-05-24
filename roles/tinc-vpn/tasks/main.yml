@@ -45,6 +45,11 @@
       line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
     when: ec2_tag_classifier == 'hub'
 
+  tags:
+    - tinc
+    - tinc-configure
+
+- block:
   - name: be sure tinc is started/enables
     systemd:
       name: "{{item}}"
@@ -54,3 +59,17 @@
     with_items:
       - tinc
       - tinc@{{ec2_tag_tinc_netname}}
+
+  tags:
+    - tinc
+    - tinc-start
+    - tinc-restart
+
+- block:
+    - name: Put configuration to DynamoDB
+      dynamodb_item:
+        state: "present"
+        table: "test-table"
+        item: "{\"key\": {\"S\": \"aaaaa\"}, \"value\": {\"S\": \"bbbb\"}}"
+
+
