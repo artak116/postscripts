@@ -66,9 +66,11 @@
     - tinc-restart
 
 - block:
+    - debug:
+        msg: "{{ec2_vpc_cidr}}"
     - name: Put configuration to DynamoDB
       dynamodb_item:
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: ' { "node-id": { "S": "{{tinc_host_name}}" }, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"} } '
+        item: ' {"node-id": {"S": "{{tinc_host_name}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"} } '
