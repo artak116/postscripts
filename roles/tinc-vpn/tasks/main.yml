@@ -67,16 +67,13 @@
 
 - block:
 
-    - name: Read config file
+    - name: Encode tinc config file
       set_fact:
-        tinc_host_conf: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}') | b64encode}}"
-
-    - debug:
-        msg: "{{tinc_host_conf}}"
+        tinc_host_conf_encoded: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}') | b64encode}}"
 
     - name: Put configuration to DynamoDB
       dynamodb_item:
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: ' {"node-id": {"S": "{{tinc_host_name}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"} } '
+        item: ' {"node-id": {"S": "{{tinc_host_name}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}  } '
