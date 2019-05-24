@@ -68,8 +68,9 @@
 - block:
     - name: Put configuration to DynamoDB
       dynamodb_item:
+        region: "us-west-2"
         state: "present"
-        table: "test-table"
+        table: "tinc-db"
         item: "{\"key\": {\"S\": \"node-id\"}, \"value\": {\"S\": \"bbbb\"}}"
 
 
