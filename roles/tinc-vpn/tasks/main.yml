@@ -72,11 +72,7 @@
         state: "present"
         table: "tinc-db"
         item: "{
-            \"node-id\": {\"S\": \"{{tinc_host_name}}\"},
-            \"classifier\": {\"S\": \"{{ec2_tag_classifier}}\"},
-            \"netname\": {\"S\": \"{{ec2_tag_tinc_netname}}\"},
-            \"public_ip\": {\"S\": \"{{ansible_ec2_public_ipv4}}\"}
-
+            \"node-id\": {\"S\": \"{{tinc_host_name}}\"}
         }"
 
 
