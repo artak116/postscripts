@@ -1,64 +1,64 @@
 ---
 
 - block:
-  - name: create tinc directory structure
-    file:
-      path: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts
-      state: directory
+    - name: create tinc directory structure
+      file:
+        path: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts
+        state: directory
 
-  - name: create tinc.conf from template
-    template:
-      src: tinc.conf.j2
-      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc.conf
+    - name: create tinc.conf from template
+      template:
+        src: tinc.conf.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc.conf
 
-  - name: create tinc-up from template
-    template:
-      src: tinc-up.j2
-      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-up
-      mode: 0755
+    - name: create tinc-up from template
+      template:
+        src: tinc-up.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-up
+        mode: 0755
 
-  - name: create tinc-down from template
-    template:
-      src: tinc-down.j2
-      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-down
-      mode: 0755
+    - name: create tinc-down from template
+      template:
+        src: tinc-down.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-down
+        mode: 0755
 
-  - name: create tinc host file from template
-    template:
-      src: tinc.host.j2
-      dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}
+    - name: create tinc host file from template
+      template:
+        src: tinc.host.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}
 
-  - name: make sure privat ekey not exists
-    file:
-      path: /etc/tinc/{{ec2_tag_tinc_netname}}/rsa_key.priv
-      state: absent
+    - name: make sure privat ekey not exists
+      file:
+        path: /etc/tinc/{{ec2_tag_tinc_netname}}/rsa_key.priv
+        state: absent
 
-  - name: generate tinc private key
-    command: tincd -n {{ec2_tag_tinc_netname}} -K4096
-    args:
-      creates: /etc/tinc/{{ec2_tag_tinc_netname}}/rsa_key.priv
+    - name: generate tinc private key
+      command: tincd -n {{ec2_tag_tinc_netname}} -K4096
+      args:
+        creates: /etc/tinc/{{ec2_tag_tinc_netname}}/rsa_key.priv
 
-  - name: tinc systemd service unit to enable logging
-    lineinfile:
-      dest: "/lib/systemd/system/tinc@.service"
-      regexp: "^ExecStart"
-      line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
-    when: ec2_tag_classifier == 'hub'
+    - name: tinc systemd service unit to enable logging
+      lineinfile:
+        dest: "/lib/systemd/system/tinc@.service"
+        regexp: "^ExecStart"
+        line: "ExecStart=/usr/sbin/tincd -n %i -D -d0 --logfile"
+      when: ec2_tag_classifier == 'hub'
 
   tags:
     - tinc
     - tinc-configure
 
 - block:
-  - name: be sure tinc is started/enables
-    systemd:
-      name: "{{item}}"
-      enabled: yes
-      daemon_reload: yes
-      state: "restarted"
-    with_items:
-      - tinc
-      - tinc@{{ec2_tag_tinc_netname}}
+    - name: be sure tinc is started/enables
+      systemd:
+        name: "{{item}}"
+        enabled: yes
+        daemon_reload: yes
+        state: "restarted"
+      with_items:
+        - tinc
+        - tinc@{{ec2_tag_tinc_netname}}
 
   tags:
     - tinc
@@ -66,9 +66,9 @@
     - tinc-restart
 
 - block:
-  - name: Put configuration to DynamoDB
-    dynamodb_item:
-      region: "us-west-2"
-      state: "present"
-      table: "tinc-db"
-      item: '{ "node-id": { "S": "{{tinc_host_name}}" }, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"} }'
+    - name: Put configuration to DynamoDB
+      dynamodb_item:
+        region: "us-west-2"
+        state: "present"
+        table: "tinc-db"
+        item: '{ "node-id": { "S": "{{tinc_host_name}}" }, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"} }'
