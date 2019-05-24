@@ -71,7 +71,8 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: "{
+        item: |
+        "{
             \"node-id\": {\"S\": \"{{tinc_host_name}}\"}
         }"
 
