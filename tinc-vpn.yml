@@ -24,7 +24,7 @@
     - ec2_tag_role: "{{ec2_tags.tags.role}}"
     - ec2_tag_classifier: "{{ec2_tags.tags.classifier}}"
     - ec2_tag_tinc_netname: "{{ec2_tags.tags.tinc_netname}}"
-    - ec2_vpc_cidr: '{{ "ansible_ec2_network_interfaces_macs_" + ansible_ec2_mac|replace(":","_") + "_vpc_ipv4_cidr_block" }}'
+    - ec2_vpc_cidr: '{{ vars["ansible_ec2_network_interfaces_macs_" + ansible_ec2_mac|replace(":","_") + "_vpc_ipv4_cidr_block"] }}'
     - tinc_host_name: "{{ec2_tag_classifier}}_{{ec2_tag_cluster}}"
 
   roles:

@@ -66,8 +66,7 @@
     - tinc-restart
 
 - block:
-    - debug:
-        msg: "{{ec2_vpc_cidr}}"
+
     - name: Put configuration to DynamoDB
       dynamodb_item:
         region: "us-west-2"

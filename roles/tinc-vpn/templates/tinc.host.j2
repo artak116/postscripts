@@ -1,2 +1,2 @@
 Address = {{ansible_ec2_public_ipv4}}
-Subnet = {{ vars['ansible_ec2_network_interfaces_macs_' + ansible_ec2_mac|replace(":","_") + '_vpc_ipv4_cidr_block'] }}
+Subnet = {{ec2_vpc_cidr}}
