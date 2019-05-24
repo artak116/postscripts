@@ -71,4 +71,7 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: "{\"key\": {\"S\": \"{{tinc_host_name}}\"}}"
+        item:
+          - 'key': 'node-id'
+            'value': 'gago'
+
