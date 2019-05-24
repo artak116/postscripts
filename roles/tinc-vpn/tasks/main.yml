@@ -70,6 +70,6 @@
       dynamodb_item:
         state: "present"
         table: "test-table"
-        item: "{\"key\": {\"S\": \"aaaaa\"}, \"value\": {\"S\": \"bbbb\"}}"
+        item: "{\"key\": {\"S\": \"node-id\"}, \"value\": {\"S\": \"bbbb\"}}"
 
 
