@@ -69,7 +69,7 @@
 
     - name: Read config file
       set_fact:
-        tinc_host_conf: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/{{tinc_host_name}}') | b64encode}}"
+        tinc_host_conf: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}') | b64encode}}"
 
     - debug:
         msg: "{{tinc_host_conf}}"
