@@ -73,7 +73,7 @@
         table: "tinc-db"
         item: >
         {
-            \"node-id\": {\"S\": \"{{tinc_host_name}}\"}
+            "node-id": {"S": "{{tinc_host_name}}"}
         }
 
 
