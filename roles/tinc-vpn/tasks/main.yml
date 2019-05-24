@@ -71,4 +71,4 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: {"key": {"S": "gago"}}
+        item: "{\"key\": {\"S\": \"gago\"}}"
