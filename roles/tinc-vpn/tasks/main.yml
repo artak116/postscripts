@@ -71,6 +71,7 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
+        key: "node-id"
         item: "{\"key\": {\"S\": \"node-id\"}, \"value\": {\"S\": \"bbbb\"}}"
 
 
