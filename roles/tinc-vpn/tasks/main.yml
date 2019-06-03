@@ -50,7 +50,7 @@
     - tinc-configure
 
 - block:
-    - name: be sure tinc is started/enables
+    - name: be sure tinc is started/enabled
       systemd:
         name: "{{item}}"
         enabled: yes
@@ -77,3 +77,7 @@
         state: "present"
         table: "tinc-db"
         item: ' {"node-id": {"S": "{{tinc_host_name}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}  } '
+
+  tags:
+    - tinc
+    - tinc-dynamodb
