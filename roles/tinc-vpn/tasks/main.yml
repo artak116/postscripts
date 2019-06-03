@@ -26,7 +26,7 @@
     - name: create tinc host file from template
       template:
         src: tinc.host.j2
-        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_node_id}}
 
     - name: make sure privat ekey not exists
       file:
@@ -67,16 +67,16 @@
 
 - block:
 
-    - name: Encode tinc config file
+    - name: encode tinc config file
       set_fact:
-        tinc_host_conf_encoded: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_host_name}}') | b64encode}}"
+        tinc_host_conf_encoded: "{{ lookup('file', '/etc/tinc/{{ec2_tag_tinc_netname}}/hosts/{{tinc_node_id}}') | b64encode}}"
 
-    - name: Put configuration to DynamoDB
+    - name: put configuration to DynamoDB
       dynamodb_item:
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: ' {"node-id": {"S": "{{tinc_host_name}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}  } '
+        item: ' {"node-id": {"S": "{{tinc_node_id}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}  } '
 
   tags:
     - tinc
