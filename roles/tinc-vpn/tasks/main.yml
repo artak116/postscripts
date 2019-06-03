@@ -76,7 +76,7 @@
         region: "us-west-2"
         state: "present"
         table: "tinc-db"
-        item: ' {"node-id": {"S": "{{tinc_node_id}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}  } '
+        item: ' {"node-id": {"S": "{{tinc_node_id}}"}, "netname": {"S": "{{ec2_tag_tinc_netname}}"}, "classifier": {"S": "{{ec2_tag_classifier}}"}, "public_ip": {"S": "{{ansible_ec2_public_ipv4}}"}, "subnet": {"S": "{{ec2_vpc_cidr}}"}, "host_file": {"S": "{{tinc_host_conf_encoded}}"}, "status": {"S": "on"}  } '
 
   tags:
     - tinc
