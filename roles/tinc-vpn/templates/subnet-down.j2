@@ -1,5 +1,5 @@
 #!/bin/bash
 
-{% [ -z  "${NODE##*ec2_tag_classifier*}" ] && exit 0   %}
+[ -z  "${NODE##*{{ ec2_tag_classifier }}*}" ] && exit 0
 
 route del -net ${SUBNET} dev tun0
