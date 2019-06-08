@@ -1,9 +1,12 @@
 #!/bin/bash
 
-EXCLUDE_NODE="spoke"
 {% if ec2_tag_classifier == 'spoke' %}
-EXCLUDE_NODE="hub"
+[ -z  "${NODE##*hub*}" ] && exit 0
 {% endif %}
 
-[ -z  "${NODE##*$EXCLUDE_NODE*}" ] && exit 0
+
+{% if ec2_tag_classifier == 'hub' %}
+[ -z  "${NODE##*spoke*}" ] && exit 0
+{% endif %
+
 route add -net ${SUBNET} dev tun0
