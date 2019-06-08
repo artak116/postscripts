@@ -45,27 +45,9 @@ def get_args():
 
 
 def dynamo_client(table, region):
-    db_client = boto3.resource('dynamodb'
-                               # region_name=region,
-                               # profile_name = "my-aws"
-                               # aws_access_key_id="AKIAJPSLK2GP5AYDWG3Q",
-                               # aws_secret_access_key="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"
-                               )
-
+    db_client = boto3.resource('dynamodb', region_name=region)
     db_table = db_client.Table(table)
-
     return db_table
-
-
-def is_active(table, node_id):
-    try:
-        response = table.query(KeyConditionExpression=Key('node_id').eq(node_id))
-    except Exception as e:
-        logging.error("e")
-        raise e
-    if response['Items'][0]['state'] == 'on':
-        return True
-    return False
 
 
 def fetch_table_data(table, netname, classifier):
@@ -90,6 +72,45 @@ def fetch_table_data(table, netname, classifier):
         data.extend(response['Items'])
 
     return data
+
+
+def get_nodes_ip_lists(data):
+    ips = []
+    for node in data:
+        ips.append(node["public_ip"])
+
+    return ips
+
+
+def get_nodes_subnets_lists(data):
+    subnets = []
+    for node in data:
+        subnets.append(node["subnet"])
+
+    return subnets
+
+
+def get_nodes_hosts_lists(data):
+    hosts = {}
+    for node in data:
+        hosts[node["node-id"]] = node["host_file"]
+
+    return hosts
+
+
+def route_sum(data):
+    binIPs = [''.join(format(int(d), '08b') for d in a.split('.')) for a in data]
+    subnet = 32
+    while len(set(i[:subnet] for i in binIPs)) > 1:
+        subnet -= 1
+    bin_route = binIPs[0][:subnet].ljust(32, '0')
+    route = '.'.join(str(int(bin_route[i:i+8], 2)) for i in range(0, 32, 8))
+    return '{}/{}'.format(route, subnet)
+
+
+def create_up_down_scripts(route_data, netname):
+    up_script_path = "/etc/tinc/" + netname + "/tinc-up"
+    down_script_path = "/etc/tinc/" + netname + "/tinc-down"
 
 
 def create_host_file(host, modified=0):
@@ -144,41 +165,52 @@ def restart_tinc(netname):
 def main():
 
     # Get passed arguments
-    provider, table, table_region, netname, classifier, cidr, node_id = get_args()
+    provider, table, table_region, netname, classifier, node_id = get_args()
     db_table = dynamo_client(table, table_region)
-
-    # setup logger
-    log_file = 'reinit.log'
-    logging.basicConfig(filename=log_file, format='%(asctime)s %(funcName)s %(levelname)s %(message)s', level=logging.INFO)
-
-    # Fetch data from db
     data = fetch_table_data(db_table, netname, classifier)
+    public_ips = get_nodes_ip_lists(data)
+    subnets = get_nodes_subnets_lists(data)
+    host_files = get_nodes_hosts_lists(data)
 
-    # static variables
-    number_of_modifications = 0
+    subnets_networks = []
+    for subnet in subnets:
+        subnets_networks.append(subnet.split('/')[0])
 
-    if is_active(db_table, node_id):
-        for node in data:
-            if node['node_id'] == node_id:
-                continue
-            else:
-                if is_active(db_table, node['node_id']):
-                    number_of_modifications = number_of_modifications + create_host_file(node)
-                else:
-                    number_of_modifications = number_of_modifications + remove_host_file(node)
-    else:
-        for node in data:
-            if node['node_id'] == node_id:
-                continue
-            else:
-                logging.info("%s %s is disabled, removing cache" % (node_id, classifier))
-                number_of_modifications = number_of_modifications + remove_host_file(node)
-                logging.info("%s %s cache cleared" % (node_id, classifier))
+    summary_route = route_sum(subnets_networks)
 
-    if number_of_modifications > 0:
-        restart_tinc(netname)
-    else:
-        logging.info('No any changes in configs, skipping Tinc restart')
+    print('gago')
+    # # setup logger
+    # log_file = 'reinit.log'
+    # logging.basicConfig(filename=log_file, format='%(asctime)s %(funcName)s %(levelname)s %(message)s', level=logging.INFO)
+    #
+    # # Fetch data from db
+    # data = fetch_table_data(db_table, netname, classifier)
+    #
+    # # static variables
+    # number_of_modifications = 0
+    #
+    # if is_active(db_table, node_id):
+    #     for node in data:
+    #         if node['node_id'] == node_id:
+    #             continue
+    #         else:
+    #             if is_active(db_table, node['node_id']):
+    #                 number_of_modifications = number_of_modifications + create_host_file(node)
+    #             else:
+    #                 number_of_modifications = number_of_modifications + remove_host_file(node)
+    # else:
+    #     for node in data:
+    #         if node['node_id'] == node_id:
+    #             continue
+    #         else:
+    #             logging.info("%s %s is disabled, removing cache" % (node_id, classifier))
+    #             number_of_modifications = number_of_modifications + remove_host_file(node)
+    #             logging.info("%s %s cache cleared" % (node_id, classifier))
+    #
+    # if number_of_modifications > 0:
+    #     restart_tinc(netname)
+    # else:
+    #     logging.info('No any changes in configs, skipping Tinc restart')
 
 
 if __name__ == '__main__':

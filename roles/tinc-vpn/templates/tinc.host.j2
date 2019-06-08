@@ -1,2 +1,4 @@
 Address = {{ansible_ec2_public_ipv4}}
-Subnet = {{ec2_vpc_cidr}}
+{% for subnet in ec2_vpc_cidrs.split('\n') %}
+Subnet = {{subnet}}
+{% endfor %}

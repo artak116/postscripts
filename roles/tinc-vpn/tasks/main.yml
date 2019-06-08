@@ -23,6 +23,18 @@
         dest: /etc/tinc/{{ec2_tag_tinc_netname}}/tinc-down
         mode: 0755
 
+    - name: create subnet-up from template
+      template:
+        src: subnet-up.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/subnet-up
+        mode: 0755
+
+    - name: create subnet-down from template
+      template:
+        src: subnet-down.j2
+        dest: /etc/tinc/{{ec2_tag_tinc_netname}}/subnet-down
+        mode: 0755
+
     - name: create tinc host file from template
       template:
         src: tinc.host.j2
